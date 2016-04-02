@@ -1,0 +1,21 @@
+[
+  {
+    "type": "summary",
+    "description": "ps 显示进程"
+  },
+  {
+    "type": "toggle",
+    "description": "-A  显示全部",
+    "value": "-A",
+    "exclude": ["--append"]
+  },
+  {
+    "type": "set",
+    "description": "--append string  加入一些字符串",
+    "value": "--append"
+  },
+  {
+    "type": "text",
+    "description": "string  加入一些字符串"
+  }
+]
