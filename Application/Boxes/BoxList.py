@@ -2,18 +2,19 @@ from Application.Boxes.Checkbox import create_checkbox
 from Application.Boxes.Setbox import create_setbox
 from Application.Boxes.Textbox import create_textbox
 from Application.Boxes.Summarybox import create_summarybox
+import copy
 
 
 # 工厂方法
-def create_box(type, on_change, tk_master, json_data):
+def create_box(type, on_change, tk_master, json_data, on_duplicate, after=None):
 	if type == 'toggle':
-		return create_checkbox(on_change, tk_master, json_data)
+		return create_checkbox(on_change, tk_master, json_data, on_duplicate, after)
 	elif type == 'set':
-		return create_setbox(on_change, tk_master, json_data)
+		return create_setbox(on_change, tk_master, json_data, on_duplicate, after)
 	elif type == 'text':
-		return create_textbox(on_change, tk_master, json_data)
+		return create_textbox(on_change, tk_master, json_data, on_duplicate, after)
 	elif type == 'summary':
-		return create_summarybox(on_change, tk_master, json_data)
+		return create_summarybox(on_change, tk_master, json_data, on_duplicate, after)
 	else:
 		pass
 
@@ -28,7 +29,7 @@ class BoxList:
 
 	def parse_config(self, json_data):
 		for json_box_data in json_data:
-			self.box_list.append(create_box(json_box_data['type'], self.on_change, self.tk_master, json_box_data))
+			self.box_list.append(create_box(json_box_data['type'], self.on_change, self.tk_master, json_box_data, self.on_duplicate))
 
 	def __str__(self):
 		strlist = []
@@ -38,6 +39,10 @@ class BoxList:
 				strlist.append(str(box))
 				strlist.append(' ')
 		return ''.join(strlist)
+
+	def on_duplicate(self, child):
+		# 注意这里after=child.frame
+		self.box_list.append(create_box(child.json_data['type'], child.on_change, child.tk_master, child.json_data, self.on_duplicate, after=child.frame))
 
 
 def create_boxlist(on_change, tk_master, json_data):
